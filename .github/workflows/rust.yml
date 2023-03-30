@@ -1,0 +1,43 @@
+name: Build Rust Binary
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches: [ "release" ]
+  pull_request:
+    branches: [ "release" ]
+
+
+env:
+  CARGO_TERM_COLOR: always
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: ghcr.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: ${{ github.repository }}
+  BUILD_TARGET: x86_64-unknown-linux-musl
+  BINARY_NAME: image_uploader
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      # This is used to complete the identity challenge
+      # with sigstore/fulcio when running outside of PRs.
+      id-token: write
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build Binary
+      uses: gmiam/rust-musl-action@master
+      with: 
+        args: RUSTFLAGS='-C link-arg=-s' cargo build --release --target $BUILD_TARGET
+
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.BINARY_NAME }}
+        path: target/x86_64-unknown-linux-musl/release/${{ env.BINARY_NAME }}*
