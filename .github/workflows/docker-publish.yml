@@ -6,14 +6,11 @@ name: Docker
 # documentation.
 
 on:
-  schedule:
-    - cron: '30 19 * * *'
-  push:
-    branches: [ "release" ]
-    # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
-  pull_request:
-    branches: [ "release" ]
+  # Dependency to a forking workflow
+  workflow_run:
+    workflows: ["Build Rust Binary"]
+    types:
+      - complete
 
 env:
   # Use docker.io for Docker Hub if empty
