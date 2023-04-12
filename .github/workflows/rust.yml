@@ -58,7 +58,7 @@ jobs:
           path: ./${{ env.BINARY_NAME }}
 
       - name: Add execution permissions
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
         with:
           args: chmod +x ./${{ env.BINARY_NAME }}
 
