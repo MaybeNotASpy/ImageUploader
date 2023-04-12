@@ -35,7 +35,6 @@ jobs:
       with: 
         args: RUSTFLAGS='-C link-arg=-s' cargo build --release --target $BUILD_TARGET
 
-
     - uses: actions/upload-artifact@v2
       with:
         name: ${{ env.BINARY_NAME }}
@@ -57,6 +56,11 @@ jobs:
         with:
           name: ${{ env.BINARY_NAME }}
           path: ./${{ env.BINARY_NAME }}
+
+      - name: Add execution permissions
+      - uses: actions/checkout@v3
+      with:
+        args: chmod +x ./${{ env.BINARY_NAME }}
 
       - name: Log in to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
