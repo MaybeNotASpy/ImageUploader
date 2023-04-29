@@ -10,6 +10,7 @@ pub struct DbMessage {
 pub type DbPipeOut = mpsc::UnboundedReceiver<DbMessage>;
 pub type DbPipeIn = mpsc::UnboundedSender<DbMessage>;
 
+#[allow(dead_code)]
 pub enum QueryType {
     Insert,
     Select,
@@ -60,7 +61,7 @@ pub fn run(mut rx: DbPipeOut) {
                 match db_connection.execute(&query, []) {
                     Ok(_) => {}
                     Err(e) => {
-                        println!("Error while executing query {}: {}", query, e);
+                        log::error!("Error while executing query {}: {}", query, e);
                         continue;
                     }
                 }
@@ -82,7 +83,9 @@ pub fn run(mut rx: DbPipeOut) {
                     let filepath: String = row.get(4).unwrap();
                     results.push(filepath);
                 }
-                return_tx.unwrap().send(results);
+                if return_tx.unwrap().send(results).is_err() {
+                    log::error!("Error while sending results to return_tx");
+                }
             }
             QueryType::Update => {
                 if creds.id.is_none() {
@@ -98,7 +101,7 @@ pub fn run(mut rx: DbPipeOut) {
                 match db_connection.execute(&query, []) {
                     Ok(_) => {}
                     Err(e) => {
-                        println!("Error while executing query {}: {}", query, e);
+                        log::error!("Error while executing query {}: {}", query, e);
                         continue;
                     }
                 }
@@ -117,7 +120,7 @@ pub fn run(mut rx: DbPipeOut) {
                 match db_connection.execute(&query, []) {
                     Ok(_) => {}
                     Err(e) => {
-                        println!("Error while executing query {}: {}", query, e);
+                        log::error!("Error while executing query {}: {}", query, e);
                         continue;
                     }
                 }

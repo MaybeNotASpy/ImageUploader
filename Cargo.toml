@@ -16,10 +16,18 @@ serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 image = "*"
 webp = "*"
-rusqlite = "*"
 once_cell = "*"
 async-trait = "*"
 lazy_static = "*"
+log = "*"
+
+[dependencies.axum]
+version = "*"
+features = ["ws"]
+
+[dependencies.flexi_logger]
+version = "*"
+features = ["colors", "async"]
 
 [dependencies.uuid]
 version = "1.3.0"
@@ -28,5 +36,9 @@ features = [
     "fast-rng",          # Use a faster (but still sufficiently random) RNG
     "macro-diagnostics", # Enable better diagnostics for compile-time UUIDs
 ]
-    
+
+[dependencies.rusqlite]
+version = "*"
+features = ["bundled"]
+
 [build-dependencies]
